@@ -12,16 +12,18 @@ class GrammarType0:
         self.terminals = set()
 
     @classmethod
-    def __from_turing_m(cls, tm: TuringMachine):
+    def from_turing_m(cls, tm: TuringMachine):
         grammar = GrammarType0()
 
-        for symbol in tm.alphabet.union(Epsilon()):
+        alphabet_with_eps = tm.alphabet.union({"eps"})
+
+        for symbol in alphabet_with_eps:
             for tape in tm.tape_symbols:
                 grammar.variables.add(f"{symbol}|{tape}")
 
-        grammar.variables.union(set([state for state in tm.states]))
+        grammar.variables |= set([state for state in tm.states])
 
-        grammar.variables.union({"S", "S1", "S2", "S3"})
+        grammar.variables |= {"S", "S1", "S2", "S3"}
 
         grammar.start_symb = "S"
 
@@ -29,10 +31,10 @@ class GrammarType0:
         for symbol in tm.alphabet:
             grammar.productions.append((["S2"], [f"{symbol}|{symbol}", "S2"]))
         grammar.productions.append((["S2"], ["S3"]))
-        grammar.productions.append((["S1"], ["S1", f"{Epsilon()}|B"]))
-        grammar.productions.append((["S3"], [f"{Epsilon()}|B"], "S3"))
-        grammar.productions.append((["S1"], [Epsilon()]))
-        grammar.productions.append((["S3"], [Epsilon()]))
+        grammar.productions.append((["S1"], ["S1", f"eps|B"]))
+        grammar.productions.append((["S3"], [f"eps|B"], "S3"))
+        grammar.productions.append((["S1"], ["eps"]))
+        grammar.productions.append((["S3"], ["eps"]))
 
         for state, tape_symb in product(tm.states, tm.tape_symbols):
             if (state, tape_symb) not in tm.transitions.keys():
@@ -41,16 +43,16 @@ class GrammarType0:
             st_to, new_symb, direction = tm.transitions[(state, tape_symb)]
 
             if direction == Arrow.Right:
-                for symbol in tm.alphabet.union(Epsilon()):
+                for symbol in alphabet_with_eps:
                     grammar.productions.append(([state, f"{symbol}|{tape_symb}"]
                                                 , [f"{symbol}|{new_symb}", st_to]))
             else:
-                for symbolA, symbolB, leftSymb in product(tm.alphabet.union(Epsilon())
-                                                  , tm.alphabet.union(Epsilon()), tm.tape_symbols):
+                for symbolA, symbolB, leftSymb in product(alphabet_with_eps
+                        , alphabet_with_eps, tm.tape_symbols):
                     grammar.productions.append(([f"{symbolB}|{leftSymb}", state, f"{symbolA}|{tape_symb}"]
                                                 , [st_to, f"{symbolB}|{leftSymb}", f"{symbolA}|{new_symb}"]))
 
-        for f_state, tape_symb, symbol in product(tm.final_states, tm.tape_symbols, tm.alphabet.union(Epsilon())):
+        for f_state, tape_symb, symbol in product(tm.final_states, tm.tape_symbols, alphabet_with_eps):
             grammar.productions.append(([f"{symbol}|{tape_symb}", f_state], [f_state, symbol, f_state]))
             grammar.productions.append(([f_state, f"{symbol}|{tape_symb}"], [f_state, symbol, f_state]))
             grammar.productions.append(([f_state], [Epsilon()]))
