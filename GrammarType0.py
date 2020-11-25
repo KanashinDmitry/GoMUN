@@ -11,6 +11,7 @@ class GrammarType0(Grammar):
     @classmethod
     def from_turing_m(cls, tm: TuringMachine):
         grammar = GrammarType0()
+        grammar.tm = tm
 
         alphabet_with_eps = tm.alphabet.union({"eps"})
 
@@ -28,17 +29,12 @@ class GrammarType0(Grammar):
         for symbol in tm.alphabet:
             grammar.productions.append((["S2"], [f"{symbol}|{symbol}", "S2"]))
         grammar.productions.append((["S2"], ["S3"]))
-        grammar.productions.append((["S1"], ["S1", f"eps|B"]))
-        grammar.productions.append((["S3"], [f"eps|B", "S3"]))
-        grammar.productions.append((["S1"], ["eps"]))
-        grammar.productions.append((["S3"], ["eps"]))
-        print(tm.transitions.keys())
+        grammar.productions.append((["S1"], [f"eps|B"]))
+        grammar.productions.append((["S3"], [f"eps|B"]))
 
         for state, tape_symb in product(tm.states, tm.tape_symbols):
             if (state, tape_symb) not in tm.transitions.keys():
                 continue
-            else:
-                print(state, tape_symb)
 
             st_to, new_symb, direction = tm.transitions[(state, tape_symb)]
 
@@ -48,7 +44,7 @@ class GrammarType0(Grammar):
                                                 , [f"{symbol}|{new_symb}", st_to]))
             else:
                 for symbolA, symbolB, leftSymb in product(alphabet_with_eps
-                        , alphabet_with_eps, tm.tape_symbols):
+                                                          , alphabet_with_eps, tm.tape_symbols):
                     grammar.productions.append(([f"{symbolB}|{leftSymb}", state, f"{symbolA}|{tape_symb}"]
                                                 , [st_to, f"{symbolB}|{leftSymb}", f"{symbolA}|{new_symb}"]))
 

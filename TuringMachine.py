@@ -5,8 +5,8 @@ from Arrow import Arrow
 class TuringMachine:
     def __init__(self, name, fs_name):
         # self.transitions: Dict[Tuple[State, Symbol], Tuple[State, Symbol, Arrow]]
-        self.tape_symbols = {"v", '1', "B", "=", "*"}
-        self.alphabet = {'1', "=", "*"}
+        self.tape_symbols = {"v", "1", "B", "=", "*"}
+        self.alphabet = {"1", "=", "*"}
         self.start_state, self.final_states, self.transitions, self.states = TuringMachine\
             .read_transitions(name, fs_name)
 

@@ -7,64 +7,58 @@ class Grammar:
         self.productions = []
         self.variables = set()
         self.terminals = set()
+        self.tm = None
 
-    def belongs(self, word: str):
-        def list_contains_another(small, big):
-            if len(big) < len(small):
-                return False
-            for i in range(len(big) - len(small) + 1):
-                for j in range(len(small)):
-                    if big[i + j] != small[j]:
+    def belongs(self, word: str, tape=None):
+        def get_subsequence(head, sentence):
+            res = []
+            if len(sentence) < len(head):
+                return []
+            for start_ind in range(len(sentence) - len(head) + 1):
+                is_similar = True
+                for head_index in range(len(head)):
+                    if sentence[start_ind + head_index] != head[head_index]:
+                        is_similar = False
                         break
-                else:
-                    return i, i + len(small)
-            return False
-
-        def dup_list(lst):
-            result = []
-
-            for item in lst:
-                result.append(item)
-
-            return result
-
-        def convert_list_to_word(lst):
-            converted_word = ""
-            for l in lst:
-                converted_word += l
-
-            return converted_word
+                if is_similar:
+                    res.append((start_ind, start_ind + len(head)))
+            return res
 
         queue = Queue()
 
-        queue.put(([self.start_symb], []))
+        tape = ["eps|B", "q0"] + [f'{l}|{l}' for l in word] + ["eps|B"] if tape is None else tape
+        tape = ['eps|B', '1|v', '1|1', '*|*', '1|B', '1|B', 'q6', '=|=', '1|B', '1|B', '1|B', '1|B', 'eps|B']
+        queue.put((tape, []))
+        visited_sentences = []
 
-        while queue.not_empty:
-            tmp, prods = queue.get()
-            tmp = [t for t in tmp if t != 'eps']
-            #print(f"Got {tmp, prods} from {queue}")
-            for x in self.productions:
-                list1, list2 = x
-                indexes = list_contains_another(list1, tmp)
-                if not indexes:
+        while queue.qsize() > 0:
+            sentence, prods_consequence = queue.get()
+
+            sent_str = ",".join(sentence)
+            if sent_str in visited_sentences:
+                continue
+            else:
+                visited_sentences.append(sent_str)
+
+            for prod in self.productions:
+                head, body = prod
+                indexes = get_subsequence(head, sentence)
+                if len(indexes) == 0:
                     continue
 
-                ind_start, ind_end = indexes
+                for ind_start, ind_end in indexes:
+                    res_part1 = [sentence[i] for i in range(ind_start)]
+                    res_part2 = body
+                    res_part3 = [sentence[i] for i in range(ind_end, len(sentence))]
 
-                res = dup_list(tmp)
+                    new_sentence = [r for r in res_part1 + res_part2 + res_part3 if r != 'eps']
+                    new_prods_consequence = prods_consequence.copy()
+                    new_prods_consequence.append(prod)
 
-                res_part1 = [res[i] for i in range(ind_start)]
-                res_part2 = list2
-                res_part3 = [res[i] for i in range(ind_end, len(res))]
+                    queue.put((new_sentence, new_prods_consequence))
 
-                final_list = [r for r in res_part1 + res_part2 + res_part3 if r != 'eps']
-                print(f'{" ".join(tmp)} -> {final_list}')
-                prods_dup = prods.copy()
-                prods_dup.append(x)
-
-                queue.put((final_list, prods_dup))
-                #print(final_list)
-                if convert_list_to_word(final_list) == word:
-                    return prods_dup
+                    if "".join(new_sentence) == word or (not any([f'q{i}' in new_sentence for i in range(19) if i != 6])
+                                                         and 'q6' in new_sentence):
+                        return new_sentence, new_prods_consequence
 
         return False

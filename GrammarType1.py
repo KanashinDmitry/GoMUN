@@ -10,6 +10,7 @@ class GrammarType1(Grammar):
     @classmethod
     def from_lba(cls, lba: LBA):
         grammar = GrammarType1()
+        grammar.tm = lba
 
         grammar.terminals = {1, "=", "*"}
 
