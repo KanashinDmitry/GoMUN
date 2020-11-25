@@ -32,7 +32,7 @@ class GrammarType0:
             grammar.productions.append((["S2"], [f"{symbol}|{symbol}", "S2"]))
         grammar.productions.append((["S2"], ["S3"]))
         grammar.productions.append((["S1"], ["S1", f"eps|B"]))
-        grammar.productions.append((["S3"], [f"eps|B"], "S3"))
+        grammar.productions.append((["S3"], [f"eps|B", "S3"]))
         grammar.productions.append((["S1"], ["eps"]))
         grammar.productions.append((["S3"], ["eps"]))
 
