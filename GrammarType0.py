@@ -1,15 +1,12 @@
 from TuringMachine import TuringMachine
 from Arrow import Arrow
-from Symbol import *
 from itertools import product
+from Grammar import Grammar
 
 
-class GrammarType0:
+class GrammarType0(Grammar):
     def __init__(self):
-        self.start_symb = None
-        self.productions = []
-        self.variables = set()
-        self.terminals = set()
+        super().__init__()
 
     @classmethod
     def from_turing_m(cls, tm: TuringMachine):
@@ -35,10 +32,13 @@ class GrammarType0:
         grammar.productions.append((["S3"], [f"eps|B", "S3"]))
         grammar.productions.append((["S1"], ["eps"]))
         grammar.productions.append((["S3"], ["eps"]))
+        print(tm.transitions.keys())
 
         for state, tape_symb in product(tm.states, tm.tape_symbols):
             if (state, tape_symb) not in tm.transitions.keys():
                 continue
+            else:
+                print(state, tape_symb)
 
             st_to, new_symb, direction = tm.transitions[(state, tape_symb)]
 
@@ -55,6 +55,6 @@ class GrammarType0:
         for f_state, tape_symb, symbol in product(tm.final_states, tm.tape_symbols, alphabet_with_eps):
             grammar.productions.append(([f"{symbol}|{tape_symb}", f_state], [f_state, symbol, f_state]))
             grammar.productions.append(([f_state, f"{symbol}|{tape_symb}"], [f_state, symbol, f_state]))
-            grammar.productions.append(([f_state], [Epsilon()]))
+            grammar.productions.append(([f_state], ["eps"]))
 
         return grammar
