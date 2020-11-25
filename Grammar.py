@@ -27,7 +27,6 @@ class Grammar:
         queue = Queue()
 
         tape = ["eps|B", "q0"] + [f'{l}|{l}' for l in word] + ["eps|B"] if tape is None else tape
-        tape = ['eps|B', '1|v', '1|1', '*|*', '1|B', '1|B', 'q6', '=|=', '1|B', '1|B', '1|B', '1|B', 'eps|B']
         queue.put((tape, []))
         visited_sentences = []
 
