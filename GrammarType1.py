@@ -1,6 +1,7 @@
 from LBA import LBA
 from Arrow import Arrow
 
+from queue import Queue
 
 class GrammarType1:
     def __init__(self):
@@ -140,3 +141,62 @@ class GrammarType1:
         grammar.productions = unique_prod
 
         return grammar
+
+    def belongs(self, word: str):
+        def list_contains_another(small, big):
+            if len(big) < len(small):
+                return False
+            for i in range(len(big) - len(small) + 1):
+                for j in range(len(small)):
+                    if big[i + j] != small[j]:
+                        break
+                else:
+                    return i, i + len(small)
+            return False
+
+        def dup_list(list):
+            result = []
+
+            for item in list:
+                result.append(item)
+
+            return result
+
+        def convert_list_to_word(list):
+            converted_word = ""
+            for l in list:
+                converted_word += l
+
+            return converted_word
+
+        queue = Queue()
+
+        queue.put(([self.start_symb], []))
+
+        while queue.not_empty:
+            tmp, prods = queue.get()
+            for x in self.productions:
+                list1, list2 = x
+                indexes = list_contains_another(list1, tmp)
+                if not indexes:
+                    continue
+
+                ind_start, ind_end = indexes
+
+                res = dup_list(tmp)
+
+                res_part1 = [res[i] for i in range(ind_start)]
+                res_part2 = list2
+                res_part3 = [res[i] for i in range(ind_end, len(res))]
+
+                final_list = res_part1 + res_part2 + res_part3
+
+                prods_dup = dup_list(prods)
+                prods_dup.append(x)
+
+                queue.put((final_list, prods_dup))
+
+                if convert_list_to_word(final_list) == word:
+                    return prods_dup
+
+        return False

@@ -15,6 +15,8 @@ def main():
     grammar_t1 = GrammarType1.from_lba(lba)
     print(len(grammar_t1.productions))
 
+    print(grammar_t1.belongs("1*1=1"))
+
     return 0
 
 
