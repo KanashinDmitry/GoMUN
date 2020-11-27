@@ -27,7 +27,7 @@ class Grammar:
         queue = Queue()
 
         tape = ["eps|B", "q0"] + [f'{l}|{l}' for l in word] + ["eps|B"] if self.__class__.__name__ == "GrammarType0" \
-            else [f'[q19, #, {word[0]}, {word[0]}]'] + [f'[{x}, {x}]' for x in word[1:-1]] + [f'[{word[-1]}, {word[-1]}, $]']
+            else [f'[{self.tm.start_state}, #, {word[0]}, {word[0]}]'] + [f'[{x}, {x}]' for x in word[1:-1]] + [f'[{word[-1]}, {word[-1]}, $]']
 
         queue.put((tape, [(tape, None)]))
         visited_sentences = []
