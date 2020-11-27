@@ -47,6 +47,9 @@ class Grammar:
                 if len(indexes) == 0:
                     continue
 
+                if body == ['eps'] and any([symb in sentence for symb in ['1|v', '1|B', '1|1', '=|=', '*|*', 'eps|B']]):
+                    continue
+
                 for ind_start, ind_end in indexes:
                     res_part1 = [sentence[i] for i in range(ind_start)]
                     res_part2 = body
