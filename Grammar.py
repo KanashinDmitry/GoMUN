@@ -9,7 +9,7 @@ class Grammar:
         self.terminals = set()
         self.tm = None
 
-    def belongs(self, word: str, tape=None):
+    def belongs(self, word: str):
         def get_subsequence(head, sentence):
             res = []
             if len(sentence) < len(head):
@@ -26,8 +26,10 @@ class Grammar:
 
         queue = Queue()
 
-        tape = ["eps|B", "q0"] + [f'{l}|{l}' for l in word] + ["eps|B"] if tape is None else tape
-        queue.put((tape, []))
+        tape = ["eps|B", "q0"] + [f'{l}|{l}' for l in word] + ["eps|B"] if self.__class__.__name__ == "GrammarType0" \
+            else [f'[q19, #, {word[0]}, {word[0]}]'] + [f'[{x}, {x}]' for x in word[1:-1]] + [f'[{word[-1]}, {word[-1]}, $]']
+
+        queue.put((tape, [(tape, None)]))
         visited_sentences = []
 
         while queue.qsize() > 0:
@@ -52,7 +54,7 @@ class Grammar:
 
                     new_sentence = [r for r in res_part1 + res_part2 + res_part3 if r != 'eps']
                     new_prods_consequence = prods_consequence.copy()
-                    new_prods_consequence.append(prod)
+                    new_prods_consequence.append((new_sentence, prod))
 
                     queue.put((new_sentence, new_prods_consequence))
 

@@ -12,7 +12,7 @@ class GrammarType1(Grammar):
         grammar = GrammarType1()
         grammar.tm = lba
 
-        grammar.terminals = {1, "=", "*"}
+        grammar.terminals = {"1", "=", "*"}
 
         grammar.variables.union({"A1", "A2"})
         for a in lba.alphabet:
@@ -99,6 +99,11 @@ class GrammarType1(Grammar):
                         for b in lba.alphabet:
                             grammar.productions.append(([f"[{key1}, {key2}, {a}]", f"[{x}, {b}, $]"],
                                                         [f"[{value2}, {a}]", f"[{value1}, {x}, {b}, $]"]))
+
+                    if key2 not in ['#', '$'] and value2 not in ['#', '$'] and value3 == Arrow.Left and key1 not in lba.final_states:
+                        for b in lba.alphabet:
+                            grammar.productions.append(([f"[#, {x}, {b}]", f"[{key1}, {key2}, {a}]"],
+                                                        [f"[#, {value1}, {x}, {b}]", f"[{value2}, {a}]"]))
 
                 # 7
                 for key, value in lba.transitions.items():
