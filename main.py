@@ -23,21 +23,21 @@ def main():
     #     for pr in grammar_t0.productions:
     #         file.write(str(pr) + "\n")
 
-    words = ["1*1=1", "111*11=111111", "11*11=1111", "11*111=111111", "111*1=111"]
-    results_t0 = []
-    results_t1 = []
-
-    for word in words:
-        results_t0.append(grammar_t0.belongs(word))
-        results_t1.append(grammar_t1.belongs(word))
-
-    with open("res_cons_t0.txt", 'a+') as file:
-        for i in range(len(words)):
-            file.write(f'{words[i]} - {results_t0[i][1]}\n')
-
-    with open("res_cons_t1.txt", 'a+') as file:
-        for i in range(len(words)):
-            file.write(f'{words[i]} - {results_t1[i][1]}\n')
+    # words = ["1*1=1", "111*11=111111", "11*11=1111", "11*111=111111", "111*1=111"]
+    # results_t0 = []
+    # results_t1 = []
+    #
+    # for word in words:
+    #     results_t0.append(grammar_t0.belongs(word))
+    #     results_t1.append(grammar_t1.belongs(word))
+    #
+    # with open("res_cons_t0.txt", 'a+') as file:
+    #     for i in range(len(words)):
+    #         file.write(f'{words[i]} - {results_t0[i][1]}\n')
+    #
+    # with open("res_cons_t1.txt", 'a+') as file:
+    #     for i in range(len(words)):
+    #         file.write(f'{words[i]} - {results_t1[i][1]}\n')
 
     print(grammar_t0.belongs("11*11=1111"))
 

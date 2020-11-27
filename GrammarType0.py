@@ -2,6 +2,7 @@ from TuringMachine import TuringMachine
 from Arrow import Arrow
 from itertools import product
 from Grammar import Grammar
+from queue import Queue
 
 
 class GrammarType0(Grammar):
@@ -54,3 +55,48 @@ class GrammarType0(Grammar):
             grammar.productions.append(([f_state], ["eps"]))
 
         return grammar
+
+    def belongs(self, word: str):
+
+        queue = Queue()
+
+        tape = ["eps|B", "q0"] + [f'{l}|{l}' for l in word] + ["eps|B"] if self.__class__.__name__ == "GrammarType0" \
+            else [f'[{self.tm.start_state}, #, {word[0]}, {word[0]}]'] + [f'[{x}, {x}]' for x in word[1:-1]] + [f'[{word[-1]}, {word[-1]}, $]']
+
+        queue.put((tape, [(tape, None)]))
+        visited_sentences = []
+
+        while queue.qsize() > 0:
+            sentence, prods_consequence = queue.get()
+
+            sent_str = ",".join(sentence)
+            if sent_str in visited_sentences:
+                continue
+            else:
+                visited_sentences.append(sent_str)
+
+            for prod in self.productions:
+                head, body = prod
+                indexes = Grammar.get_subsequence(head, sentence)
+                if len(indexes) == 0:
+                    continue
+
+                if body == ['eps'] and any([symb in sentence for symb in ['1|v', '1|B', '1|1', '=|=', '*|*', 'eps|B']]):
+                    continue
+
+                for ind_start, ind_end in indexes:
+                    res_part1 = [sentence[i] for i in range(ind_start)]
+                    res_part2 = body
+                    res_part3 = [sentence[i] for i in range(ind_end, len(sentence))]
+
+                    new_sentence = [r for r in res_part1 + res_part2 + res_part3 if r != 'eps']
+                    new_prods_consequence = prods_consequence.copy()
+                    new_prods_consequence.append((new_sentence, prod))
+
+                    queue.put((new_sentence, new_prods_consequence))
+
+                    if "".join(new_sentence) == word or (not any([f'q{i}' in new_sentence for i in range(19) if i != 6])
+                                                         and 'q6' in new_sentence):
+                        return new_sentence, new_prods_consequence
+
+        return False

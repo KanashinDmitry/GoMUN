@@ -1,6 +1,7 @@
 from LBA import LBA
 from Arrow import Arrow
 from Grammar import Grammar
+from queue import Queue
 
 
 class GrammarType1(Grammar):
@@ -144,3 +145,55 @@ class GrammarType1(Grammar):
         grammar.productions = unique_prod
 
         return grammar
+
+    def belongs(self, word: str):
+        queue = Queue()
+
+        prods_list = [([self.start_symb], None)]
+
+        prods_list.append(([f"[{self.tm.start_state}, #, {word[0]}, {word[0]}]", "A2"],
+                           (["A1"], [f"[{self.tm.start_state}, #, {word[0]}, {word[0]}]", "A2"])))
+
+        tmp_sentence = [f"[{self.tm.start_state}, #, {word[0]}, {word[0]}]", "A2"]
+        for item in word[1:-1]:
+            tmp_sentence = tmp_sentence[:-1] + [f"[{item}, {item}]", "A2"]
+            prods_list.append((tmp_sentence,
+                               (["A2"], [f"[{item}, {item}]", "A2"])))
+
+        tmp_sentence = tmp_sentence[:-1] + [f"[{word[-1]}, {word[-1]}, $]"]
+        prods_list.append((tmp_sentence,
+                           (["A2"], [f"[{word[-1]}, {word[-1]}, $]"])))
+
+        queue.put((tmp_sentence, prods_list))
+        visited_sentences = []
+
+        while queue.qsize() > 0:
+            sentence, prods_consequence = queue.get()
+
+            sent_str = ",".join(sentence)
+            if sent_str in visited_sentences:
+                continue
+            else:
+                visited_sentences.append(sent_str)
+
+            for prod in self.productions:
+                head, body = prod
+                indexes = Grammar.get_subsequence(head, sentence)
+                if len(indexes) == 0:
+                    continue
+
+                for ind_start, ind_end in indexes:
+                    res_part1 = [sentence[i] for i in range(ind_start)]
+                    res_part2 = body
+                    res_part3 = [sentence[i] for i in range(ind_end, len(sentence))]
+
+                    new_sentence = res_part1 + res_part2 + res_part3
+                    new_prods_consequence = prods_consequence.copy()
+                    new_prods_consequence.append((new_sentence, prod))
+
+                    queue.put((new_sentence, new_prods_consequence))
+
+                    if "".join(new_sentence) == word:
+                        return new_sentence, new_prods_consequence
+
+        return False
