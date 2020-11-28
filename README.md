@@ -40,6 +40,7 @@ python3 main.py -l=2 -r=2 --res=4 -t=0 --der
 11*11=1111 ['1', '1', '*', '1', '1', '=', '1', '1', '1', '1']
 Start symbol S
 Using S -> S1 Q0 S2 new sentence is ['S1', 'Q0', 'S2']
+Using S1 -> B new sentence is ['B', 'Q0', 'S2']
 Using S2 -> V5 S2 new sentence is ['B', 'Q0', 'V5', 'S2']
 Using S2 -> V5 S2 new sentence is ['B', 'Q0', 'V5', 'V5', 'S2']
 Using S2 -> V18 S2 new sentence is ['B', 'Q0', 'V5', 'V5', 'V18', 'S2']
