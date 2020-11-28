@@ -2,7 +2,7 @@
 ## Multiplication of non-zero numbers
 Just another unrestricted and context-sensitive grammars generating correct multiplication operation under unary integers.
 
-Result grammars can be found in [Unrestricted grammar](https://github.com/KanashinDmitry/GoMUN/blob/dev/res_grammar_0.txt) and [Context-sensitive grammar](https://github.com/KanashinDmitry/GoMUN/blob/dev/res_grammar_1.txt)
+Result grammars can be found in [Unrestricted grammar](https://github.com/KanashinDmitry/GoMUN/blob/main/res_grammar_0.txt) and [Context-sensitive grammar](https://github.com/KanashinDmitry/GoMUN/blob/main/res_grammar_1.txt)
 
 ## Usage
 ```
@@ -20,7 +20,7 @@ optional arguments:
   -t TYPE          Grammar type (0 or 1)
 ```
 ## Examples
-Some results with full derivation can be found in [Unrestricted grammar results](https://github.com/KanashinDmitry/GoMUN/blob/dev/res_cons_t0.txt) and [Context-sensitive grammar results](https://github.com/KanashinDmitry/GoMUN/blob/dev/res_cons_t1.txt)
+Some results with full derivation can be found in [Unrestricted grammar results](https://github.com/KanashinDmitry/GoMUN/blob/main/res_cons_t0.txt) and [Context-sensitive grammar results](https://github.com/KanashinDmitry/GoMUN/blob/main/res_cons_t1.txt)
 
 3*2=6
 ```
