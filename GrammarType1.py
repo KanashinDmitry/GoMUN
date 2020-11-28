@@ -7,6 +7,7 @@ from queue import Queue
 class GrammarType1(Grammar):
     def __init__(self):
         super().__init__()
+        self.rename_map = dict()
 
     @classmethod
     def from_lba(cls, lba: LBA):
@@ -15,7 +16,8 @@ class GrammarType1(Grammar):
 
         grammar.terminals = {"1", "=", "*"}
 
-        grammar.variables.union({"A1", "A2"})
+        grammar.variables.add("A1")
+        grammar.variables.add("A2")
         for a in lba.alphabet:
             for x in lba.tape_symbols - {"$", "#"}:
                 for q in lba.states:
@@ -142,6 +144,29 @@ class GrammarType1(Grammar):
             if x not in unique_prod:
                 unique_prod.append(x)
 
+        i = 1
+        for x in grammar.productions:
+            part1, part2 = x
+            for item in part1 + part2:
+                if item[0] == "[":
+                    if item not in grammar.rename_map.keys():
+                        grammar.rename_map[item] = f"S{i}"
+                        i += 1
+
+        for i in range(len(grammar.productions)):
+            for j in range(len(grammar.productions[i][0])):
+                if grammar.productions[i][0][j][0] == "[":
+                    grammar.productions[i][0][j] = grammar.rename_map[grammar.productions[i][0][j]]
+
+            for j in range(len(grammar.productions[i][1])):
+                if grammar.productions[i][1][j][0] == "[":
+                    grammar.productions[i][1][j] = grammar.rename_map[grammar.productions[i][1][j]]
+
+        print("rename map")
+        print(grammar.rename_map)
+        print("prods")
+        print(grammar.productions)
+
         grammar.productions = unique_prod
 
         return grammar
@@ -151,18 +176,18 @@ class GrammarType1(Grammar):
 
         prods_list = [([self.start_symb], None)]
 
-        prods_list.append(([f"[{self.tm.start_state}, #, {word[0]}, {word[0]}]", "A2"],
-                           (["A1"], [f"[{self.tm.start_state}, #, {word[0]}, {word[0]}]", "A2"])))
+        prods_list.append(([self.rename_map[f"[{self.tm.start_state}, #, {word[0]}, {word[0]}]"], "A2"],
+                           (["A1"], [self.rename_map[f"[{self.tm.start_state}, #, {word[0]}, {word[0]}]"], "A2"])))
 
-        tmp_sentence = [f"[{self.tm.start_state}, #, {word[0]}, {word[0]}]", "A2"]
+        tmp_sentence = [self.rename_map[f"[{self.tm.start_state}, #, {word[0]}, {word[0]}]"], "A2"]
         for item in word[1:-1]:
-            tmp_sentence = tmp_sentence[:-1] + [f"[{item}, {item}]", "A2"]
+            tmp_sentence = tmp_sentence[:-1] + [self.rename_map[f"[{item}, {item}]"], "A2"]
             prods_list.append((tmp_sentence,
-                               (["A2"], [f"[{item}, {item}]", "A2"])))
+                               (["A2"], [self.rename_map[f"[{item}, {item}]"], "A2"])))
 
-        tmp_sentence = tmp_sentence[:-1] + [f"[{word[-1]}, {word[-1]}, $]"]
+        tmp_sentence = tmp_sentence[:-1] + [self.rename_map[f"[{word[-1]}, {word[-1]}, $]"]]
         prods_list.append((tmp_sentence,
-                           (["A2"], [f"[{word[-1]}, {word[-1]}, $]"])))
+                           (["A2"], [self.rename_map[f"[{word[-1]}, {word[-1]}, $]"]])))
 
         queue.put((tmp_sentence, prods_list))
         visited_sentences = []
