@@ -2,7 +2,7 @@
 ## Multiplication of non-zero numbers
 Just another unrestricted and context-sensitive grammars generating correct multiplication operation under unary integers.
 
-Result grammars can be found in [Unrestricted grammar](https://github.com/KanashinDmitry/GoMUN/blob/dev/GrammarType0.py) and [Context-sensitive grammar](https://github.com/KanashinDmitry/GoMUN/blob/dev/GrammarType1.py)
+Result grammars can be found in [Unrestricted grammar](https://github.com/KanashinDmitry/GoMUN/blob/dev/res_grammar_0.txt) and [Context-sensitive grammar](https://github.com/KanashinDmitry/GoMUN/blob/dev/res_grammar_1.txt)
 
 ## Usage
 ```
