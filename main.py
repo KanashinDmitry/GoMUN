@@ -35,11 +35,19 @@ def main():
     grammar_t0 = GrammarType0.from_turing_m(tm)
     grammar_t1 = GrammarType1.from_lba(lba)
 
+    with open('res_grammar_0.txt', 'w+') as file:
+        for prod in grammar_t0.productions:
+            file.write(str(prod) + '\n')
+
+    with open('res_grammar_1.txt', 'w+') as file:
+        for prod in grammar_t1.productions:
+            file.write(str(prod) + '\n')
+
     grammar = grammar_t0 if args.type == 0 else grammar_t1
 
     res = grammar.contains(word)
 
-    if args.derivation is not None:
+    if args.derivation:
         if res_path is not None:
             with open(res_path, 'a+') as file:
                 if not res:
