@@ -37,31 +37,38 @@ def main():
 
     grammar = grammar_t0 if args.type == 0 else grammar_t1
 
+    res = grammar.contains(word)
+
     if args.derivation is not None:
         if res_path is not None:
             with open(res_path, 'a+') as file:
-                res = grammar.belongs(word)
-
                 if not res:
                     file.write(word + " " + str(res) + '\n')
                     file.write('------------------------------------\n')
                 else:
                     res_sentence, consequence = res
-                    consequence = [str(t) + '\n' for t in consequence]
                     file.write(word + " " + str(res_sentence) + '\n')
-                    file.writelines(consequence)
+                    for new_sent, prod in consequence:
+                        if prod is None:
+                            file.write(f'Start symbol {"".join(new_sent)}\n')
+                        else:
+                            head, body = prod
+                            file.write(f'Using {" ".join(head)} -> {" ".join(body)} new sentence is {new_sent}\n')
                     file.write('------------------------------------\n')
         else:
-            res = grammar.belongs(word)
             if not res:
                 print(word, res)
             else:
                 res_sentence, consequence = res
                 print(word, res_sentence)
-                for transition in consequence:
-                    print(transition)
+                for new_sent, prod in consequence:
+                    if prod is None:
+                        print(f'Start symbol {"".join(new_sent)}')
+                    else:
+                        head, body = prod
+                        print(f'Using {" ".join(head)} -> {" ".join(body)} new sentence is {new_sent}')
     else:
-        if grammar.belongs(word):
+        if res:
             print(word, True)
         else:
             print(word, False)

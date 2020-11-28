@@ -146,7 +146,7 @@ class GrammarType1(Grammar):
 
         return grammar
 
-    def belongs(self, word: str):
+    def contains(self, word: str):
         queue = Queue()
 
         prods_list = [([self.start_symb], None)]

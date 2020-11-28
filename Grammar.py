@@ -1,6 +1,3 @@
-from queue import Queue
-
-
 class Grammar:
     def __init__(self):
         self.start_symb = None
@@ -24,5 +21,5 @@ class Grammar:
                 res.append((start_ind, start_ind + len(head)))
         return res
 
-    def belongs(self, word: str):
+    def contains(self, word: str):
         pass
