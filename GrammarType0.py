@@ -98,7 +98,10 @@ class GrammarType0(Grammar):
 
     def contains_preprocessing(self, word):
         tape, prods_consequence = (
-            ['B', 'Q0', 'S2'], [(['S'], None), (['S1', 'Q0', 'S2'], (['S'], ['S1', 'Q0', 'S2']))])
+            ['S1', 'Q0', 'S2'], [(['S'], None), (['S1', 'Q0', 'S2'], (['S'], ['S1', 'Q0', 'S2']))])
+        tape, prods_consequence = (
+            ['B', 'Q0', 'S2'], [tape, (['B', 'Q0', 'S2'], (['S1'], ['B']))])
+
         for letter in word:
             mapped_letter = self.mapper_variables[f'{letter}|{letter}']
             tape = tape[:-1] + [mapped_letter, 'S2']
