@@ -45,7 +45,7 @@ class GrammarType0(Grammar):
                                                 , [f"{symbol}|{new_symb}", st_to]))
             else:
                 for symbolA, symbolB, leftSymb in product(alphabet_with_eps
-                                                          , alphabet_with_eps, tm.tape_symbols):
+                        , alphabet_with_eps, tm.tape_symbols):
                     grammar.productions.append(([f"{symbolB}|{leftSymb}", state, f"{symbolA}|{tape_symb}"]
                                                 , [st_to, f"{symbolB}|{leftSymb}", f"{symbolA}|{new_symb}"]))
 
@@ -56,19 +56,30 @@ class GrammarType0(Grammar):
 
         return grammar
 
-    def belongs(self, word: str):
+    @classmethod
+    def contains_preprocessing(cls, word):
+        tape, prods_consequence = (
+            ['eps|B', 'q0', 'S2'], [(['S'], None), (['S1', 'q0', 'S2'], (['S'], ['S1', 'q0', 'S2']))])
+        for letter in word:
+            tape = tape[:-1] + [f'{letter}|{letter}', 'S2']
+            prods_consequence.append((tape, (['S2'], [f'{letter}|{letter}', 'S2'])))
 
+        tape = tape[:-1] + ['eps|B']
+        prods_consequence += [(tape[:-1] + ['S3'], (['S2'], ['S3'])), (tape, (['S3'], ['eps|B']))]
+
+        return tape, prods_consequence
+
+    def belongs(self, word: str, with_derivation=False):
         queue = Queue()
 
-        tape = ["eps|B", "q0"] + [f'{l}|{l}' for l in word] + ["eps|B"] if self.__class__.__name__ == "GrammarType0" \
-            else [f'[{self.tm.start_state}, #, {word[0]}, {word[0]}]'] + [f'[{x}, {x}]' for x in word[1:-1]] + [f'[{word[-1]}, {word[-1]}, $]']
+        tape, prods_consequence = GrammarType0.contains_preprocessing(word)
 
-        queue.put((tape, [(tape, None)]))
+        queue.put((tape, prods_consequence))
         visited_sentences = []
 
         while queue.qsize() > 0:
             sentence, prods_consequence = queue.get()
-
+            # print(queue.qsize())
             sent_str = ",".join(sentence)
             if sent_str in visited_sentences:
                 continue
@@ -85,18 +96,24 @@ class GrammarType0(Grammar):
                     continue
 
                 for ind_start, ind_end in indexes:
-                    res_part1 = [sentence[i] for i in range(ind_start)]
-                    res_part2 = body
-                    res_part3 = [sentence[i] for i in range(ind_end, len(sentence))]
 
-                    new_sentence = [r for r in res_part1 + res_part2 + res_part3 if r != 'eps']
+                    new_sentence = [r for r in sentence[:ind_start] + body + sentence[ind_end:] if r != 'eps']
                     new_prods_consequence = prods_consequence.copy()
                     new_prods_consequence.append((new_sentence, prod))
 
                     queue.put((new_sentence, new_prods_consequence))
-
-                    if "".join(new_sentence) == word or (not any([f'q{i}' in new_sentence for i in range(19) if i != 6])
-                                                         and 'q6' in new_sentence):
+                    # print(prod, new_sentence)
+                    if "".join(new_sentence) == word or \
+                            with_derivation and (not any([f'q{i}' in new_sentence for i in range(19) if i != 6])
+                                                 and 'q6' in new_sentence):
                         return new_sentence, new_prods_consequence
+
+                    if (not any([f'q{i}' in new_sentence for i in range(19) if i != 6])
+                                                 and 'q6' in new_sentence):
+                        break
+
+                    # if "".join(new_sentence) == word or (not any([f'q{i}' in new_sentence for i in range(19) if i != 6])
+                    #                                      and 'q6' in new_sentence):
+                    #     return new_sentence, new_prods_consequence
 
         return False
