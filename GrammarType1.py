@@ -162,11 +162,6 @@ class GrammarType1(Grammar):
                 if grammar.productions[i][1][j][0] == "[":
                     grammar.productions[i][1][j] = grammar.rename_map[grammar.productions[i][1][j]]
 
-        print("rename map")
-        print(grammar.rename_map)
-        print("prods")
-        print(grammar.productions)
-
         grammar.productions = unique_prod
 
         return grammar
