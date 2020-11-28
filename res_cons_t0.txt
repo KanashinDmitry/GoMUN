@@ -1,6 +1,7 @@
 1*1=1 ['1', '*', '1', '=', '1']
 Start symbol S
 Using S -> S1 Q0 S2 new sentence is ['S1', 'Q0', 'S2']
+Using S1 -> B new sentence is ['B', 'Q0', 'S2']
 Using S2 -> V11 S2 new sentence is ['B', 'Q0', 'V11', 'S2']
 Using S2 -> V6 S2 new sentence is ['B', 'Q0', 'V11', 'V6', 'S2']
 Using S2 -> V11 S2 new sentence is ['B', 'Q0', 'V11', 'V6', 'V11', 'S2']
@@ -48,6 +49,7 @@ Using Q6 -> eps new sentence is ['1', '*', '1', '=', '1']
 11*11=1111 ['1', '1', '*', '1', '1', '=', '1', '1', '1', '1']
 Start symbol S
 Using S -> S1 Q0 S2 new sentence is ['S1', 'Q0', 'S2']
+Using S1 -> B new sentence is ['B', 'Q0', 'S2']
 Using S2 -> V9 S2 new sentence is ['B', 'Q0', 'V9', 'S2']
 Using S2 -> V9 S2 new sentence is ['B', 'Q0', 'V9', 'V9', 'S2']
 Using S2 -> V10 S2 new sentence is ['B', 'Q0', 'V9', 'V9', 'V10', 'S2']
@@ -178,6 +180,7 @@ Using Q6 -> eps new sentence is ['1', '1', '*', '1', '1', '=', '1', '1', '1', '1
 111*11=111111 ['1', '1', '1', '*', '1', '1', '=', '1', '1', '1', '1', '1', '1']
 Start symbol S
 Using S -> S1 Q0 S2 new sentence is ['S1', 'Q0', 'S2']
+Using S1 -> B new sentence is ['B', 'Q0', 'S2']
 Using S2 -> V18 S2 new sentence is ['B', 'Q0', 'V18', 'S2']
 Using S2 -> V18 S2 new sentence is ['B', 'Q0', 'V18', 'V18', 'S2']
 Using S2 -> V18 S2 new sentence is ['B', 'Q0', 'V18', 'V18', 'V18', 'S2']
@@ -372,6 +375,7 @@ Using Q6 -> eps new sentence is ['1', '1', '1', '*', '1', '1', '=', '1', '1', '1
 11*111=111111 ['1', '1', '*', '1', '1', '1', '=', '1', '1', '1', '1', '1', '1']
 Start symbol S
 Using S -> S1 Q0 S2 new sentence is ['S1', 'Q0', 'S2']
+Using S1 -> B new sentence is ['B', 'Q0', 'S2']
 Using S2 -> V1 S2 new sentence is ['B', 'Q0', 'V1', 'S2']
 Using S2 -> V1 S2 new sentence is ['B', 'Q0', 'V1', 'V1', 'S2']
 Using S2 -> V9 S2 new sentence is ['B', 'Q0', 'V1', 'V1', 'V9', 'S2']
