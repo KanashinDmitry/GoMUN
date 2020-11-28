@@ -36,6 +36,7 @@ python3 main.py -l=3 -r=2 --res=5 -t=0
 
 2*2=4 with derivation on Unrestricted grammar
 ```
+python3 main.py -l=2 -r=2 --res=4 -t=0 --der
 11*11=1111 ['1', '1', '*', '1', '1', '=', '1', '1', '1', '1']
 Start symbol S
 Using S -> S1 Q0 S2 new sentence is ['S1', 'Q0', 'S2']
